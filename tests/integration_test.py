@@ -288,8 +288,8 @@ def run_tests():
         global webhook_id
         webhook = client.webhooks.create(
             url="https://webhook.site/test-renderbase-python-sdk",
-            events=["document.completed", "document.failed"],
-            name="SDK Integration Test Webhook (Python)",
+            events=["document.generated", "document.failed"],
+            description="SDK Integration Test Webhook (Python)",
         )
 
         if not webhook.get("id") or not webhook.get("secret"):
@@ -315,11 +315,11 @@ def run_tests():
         def test_webhooks_update():
             webhook = client.webhooks.update(
                 webhook_id,
-                name="SDK Integration Test Webhook (Python - Updated)",
+                description="SDK Integration Test Webhook (Python - Updated)",
             )
             if not webhook.get("id"):
                 raise Exception("Invalid webhook response")
-            print(f"  Updated name: {webhook.get('name')}")
+            print(f"  Updated description: {webhook.get('description')}")
 
         test_webhooks_update()
 

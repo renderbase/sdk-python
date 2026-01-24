@@ -80,6 +80,17 @@ class HttpClient:
         )
         return self._handle_response(response)
 
+    def patch(
+        self, path: str, data: Optional[Dict[str, Any]] = None
+    ) -> Dict[str, Any]:
+        """Make PATCH request."""
+        response = self._client.patch(
+            f"{self.base_url}{path}",
+            headers=self._headers,
+            json=data,
+        )
+        return self._handle_response(response)
+
     def delete(self, path: str) -> Dict[str, Any]:
         """Make DELETE request."""
         response = self._client.delete(
@@ -158,6 +169,17 @@ class AsyncHttpClient:
     ) -> Dict[str, Any]:
         """Make PUT request."""
         response = await self._client.put(
+            f"{self.base_url}{path}",
+            headers=self._headers,
+            json=data,
+        )
+        return self._handle_response(response)
+
+    async def patch(
+        self, path: str, data: Optional[Dict[str, Any]] = None
+    ) -> Dict[str, Any]:
+        """Make PATCH request."""
+        response = await self._client.patch(
             f"{self.base_url}{path}",
             headers=self._headers,
             json=data,

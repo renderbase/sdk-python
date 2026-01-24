@@ -66,7 +66,7 @@ class Renderbase:
 
     def me(self) -> Dict[str, Any]:
         """Get the current authenticated user."""
-        response = self._http.get("/api/v1/me")
+        response = self._http.get("/api/auth/verify")
         return response.get("data", response)
 
     def verify_api_key(self) -> bool:
@@ -142,7 +142,7 @@ class AsyncRenderbase:
 
     async def me(self) -> Dict[str, Any]:
         """Get the current authenticated user (async)."""
-        response = await self._http.get("/api/v1/me")
+        response = await self._http.get("/api/auth/verify")
         return response.get("data", response)
 
     async def verify_api_key(self) -> bool:

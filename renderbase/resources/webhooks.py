@@ -18,15 +18,15 @@ class WebhooksResource:
         url: str,
         events: List[str],
         *,
-        name: Optional[str] = None,
+        description: Optional[str] = None,
     ) -> Dict[str, Any]:
         """
         Create a webhook subscription.
 
         Args:
             url: Webhook endpoint URL
-            events: List of event types to subscribe to
-            name: Webhook name (optional)
+            events: List of event types to subscribe to (document.generated, document.failed, document.downloaded)
+            description: Webhook description (optional)
 
         Returns:
             Webhook subscription with secret
@@ -34,8 +34,8 @@ class WebhooksResource:
         Example:
             >>> webhook = client.webhooks.create(
             ...     url="https://your-app.com/webhooks/renderbase",
-            ...     events=["document.completed", "document.failed"],
-            ...     name="My Webhook"
+            ...     events=["document.generated", "document.failed"],
+            ...     description="My Webhook"
             ... )
             >>> print(f"Secret: {webhook['secret']}")
         """
@@ -43,8 +43,8 @@ class WebhooksResource:
             "url": url,
             "events": events,
         }
-        if name:
-            body["name"] = name
+        if description:
+            body["description"] = description
 
         response = self._http.post("/api/v1/webhook-subscriptions", body)
         return response.get("data", response)
@@ -62,10 +62,9 @@ class WebhooksResource:
         self,
         webhook_id: str,
         *,
-        url: Optional[str] = None,
         events: Optional[List[str]] = None,
-        name: Optional[str] = None,
-        active: Optional[bool] = None,
+        description: Optional[str] = None,
+        is_active: Optional[bool] = None,
     ) -> Dict[str, Any]:
         """
         Update a webhook subscription.
@@ -73,21 +72,19 @@ class WebhooksResource:
         Example:
             >>> updated = client.webhooks.update(
             ...     "wh_abc123",
-            ...     events=["document.completed", "batch.completed"],
-            ...     active=True
+            ...     events=["document.generated", "document.failed"],
+            ...     is_active=True
             ... )
         """
         body: Dict[str, Any] = {}
-        if url is not None:
-            body["url"] = url
         if events is not None:
             body["events"] = events
-        if name is not None:
-            body["name"] = name
-        if active is not None:
-            body["active"] = active
+        if description is not None:
+            body["description"] = description
+        if is_active is not None:
+            body["isActive"] = is_active
 
-        response = self._http.put(f"/api/v1/webhook-subscriptions/{webhook_id}", body)
+        response = self._http.patch(f"/api/v1/webhook-subscriptions/{webhook_id}", body)
         return response.get("data", response)
 
     def delete(self, webhook_id: str) -> None:
@@ -106,15 +103,15 @@ class AsyncWebhooksResource:
         url: str,
         events: List[str],
         *,
-        name: Optional[str] = None,
+        description: Optional[str] = None,
     ) -> Dict[str, Any]:
         """Create a webhook subscription (async)."""
         body: Dict[str, Any] = {
             "url": url,
             "events": events,
         }
-        if name:
-            body["name"] = name
+        if description:
+            body["description"] = description
 
         response = await self._http.post("/api/v1/webhook-subscriptions", body)
         return response.get("data", response)
@@ -132,23 +129,20 @@ class AsyncWebhooksResource:
         self,
         webhook_id: str,
         *,
-        url: Optional[str] = None,
         events: Optional[List[str]] = None,
-        name: Optional[str] = None,
-        active: Optional[bool] = None,
+        description: Optional[str] = None,
+        is_active: Optional[bool] = None,
     ) -> Dict[str, Any]:
         """Update a webhook subscription (async)."""
         body: Dict[str, Any] = {}
-        if url is not None:
-            body["url"] = url
         if events is not None:
             body["events"] = events
-        if name is not None:
-            body["name"] = name
-        if active is not None:
-            body["active"] = active
+        if description is not None:
+            body["description"] = description
+        if is_active is not None:
+            body["isActive"] = is_active
 
-        response = await self._http.put(
+        response = await self._http.patch(
             f"/api/v1/webhook-subscriptions/{webhook_id}", body
         )
         return response.get("data", response)

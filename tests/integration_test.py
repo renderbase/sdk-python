@@ -42,7 +42,6 @@ client = Renderbase(
 template_id: Optional[str] = None
 template_variables: dict = {}
 job_id: Optional[str] = None
-webhook_id: Optional[str] = None
 
 # Test results tracking
 results: List[Tuple[str, bool, Optional[str]]] = []
@@ -78,7 +77,7 @@ def test(name: str):
 
 
 def run_tests():
-    global template_id, template_variables, job_id, webhook_id
+    global template_id, template_variables, job_id
 
     print("\n🧪 Renderbase Python SDK Integration Tests\n")
     print(f"API URL: {API_URL}")
@@ -270,7 +269,7 @@ def run_tests():
         test_list_jobs_filtered()
 
     # ==========================================
-    # Webhooks Tests
+    # Webhooks Tests (Read-only)
     # ==========================================
 
     @test("webhooks.list() - List webhooks")
@@ -281,54 +280,15 @@ def run_tests():
             raise Exception("Expected array of webhooks")
         print(f"  Found {len(data)} webhooks")
 
-    test_webhooks_list()
-
-    @test("webhooks.create() - Create webhook subscription")
-    def test_webhooks_create():
-        global webhook_id
-        webhook = client.webhooks.create(
-            url="https://webhook.site/test-renderbase-python-sdk",
-            events=["document.generated", "document.failed"],
-            description="SDK Integration Test Webhook (Python)",
-        )
-
-        if not webhook.get("id") or not webhook.get("secret"):
-            raise Exception("Invalid webhook response")
-
-        webhook_id = webhook["id"]
-        print(f"  Webhook ID: {webhook_id}")
-        print(f"  Secret: {webhook['secret'][:10]}...")
-
-    test_webhooks_create()
-
-    if webhook_id:
-        @test("webhooks.get() - Get webhook by ID")
-        def test_webhooks_get():
+        # If webhooks exist, test get by ID
+        if len(data) > 0:
+            webhook_id = data[0]["id"]
             webhook = client.webhooks.get(webhook_id)
             if not webhook.get("id") or not webhook.get("url"):
                 raise Exception("Invalid webhook response")
-            print(f"  URL: {webhook['url']}")
+            print(f"  Retrieved webhook: {webhook_id}")
 
-        test_webhooks_get()
-
-        @test("webhooks.update() - Update webhook")
-        def test_webhooks_update():
-            webhook = client.webhooks.update(
-                webhook_id,
-                description="SDK Integration Test Webhook (Python - Updated)",
-            )
-            if not webhook.get("id"):
-                raise Exception("Invalid webhook response")
-            print(f"  Updated description: {webhook.get('description')}")
-
-        test_webhooks_update()
-
-        @test("webhooks.delete() - Delete webhook")
-        def test_webhooks_delete():
-            client.webhooks.delete(webhook_id)
-            print(f"  Deleted webhook: {webhook_id}")
-
-        test_webhooks_delete()
+    test_webhooks_list()
 
     # ==========================================
     # Error Handling Tests

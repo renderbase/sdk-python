@@ -2,9 +2,9 @@
 Renderbase SDK Client
 """
 
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, Union
 
-from .http import HttpClient, AsyncHttpClient
+from .http import HttpClient, AsyncHttpClient, RetryConfig
 from .resources.documents import DocumentsResource, AsyncDocumentsResource
 from .resources.templates import TemplatesResource, AsyncTemplatesResource
 from .resources.webhooks import WebhooksResource, AsyncWebhooksResource
@@ -40,6 +40,7 @@ class Renderbase:
         base_url: str = DEFAULT_BASE_URL,
         timeout: float = DEFAULT_TIMEOUT,
         headers: Optional[Dict[str, str]] = None,
+        retry: Optional[Union[RetryConfig, bool]] = None,
     ):
         """
         Create a new Renderbase client.
@@ -49,15 +50,27 @@ class Renderbase:
             base_url: API base URL (default: https://api.renderbase.dev)
             timeout: Request timeout in seconds (default: 30)
             headers: Additional headers to include in requests
+            retry: Retry configuration. Pass RetryConfig for custom settings,
+                   True/None for defaults, or False to disable retries.
         """
         if not api_key:
             raise ValueError("api_key is required")
+
+        # Handle retry configuration
+        retry_config: Optional[RetryConfig] = None
+        if retry is False:
+            retry_config = None
+        elif retry is True or retry is None:
+            retry_config = RetryConfig()
+        else:
+            retry_config = retry
 
         self._http = HttpClient(
             base_url=base_url,
             api_key=api_key,
             timeout=timeout,
             headers=headers,
+            retry=retry_config,
         )
 
         self.documents = DocumentsResource(self._http)
@@ -116,6 +129,7 @@ class AsyncRenderbase:
         base_url: str = DEFAULT_BASE_URL,
         timeout: float = DEFAULT_TIMEOUT,
         headers: Optional[Dict[str, str]] = None,
+        retry: Optional[Union[RetryConfig, bool]] = None,
     ):
         """
         Create a new async Renderbase client.
@@ -125,15 +139,27 @@ class AsyncRenderbase:
             base_url: API base URL (default: https://api.renderbase.dev)
             timeout: Request timeout in seconds (default: 30)
             headers: Additional headers to include in requests
+            retry: Retry configuration. Pass RetryConfig for custom settings,
+                   True/None for defaults, or False to disable retries.
         """
         if not api_key:
             raise ValueError("api_key is required")
+
+        # Handle retry configuration
+        retry_config: Optional[RetryConfig] = None
+        if retry is False:
+            retry_config = None
+        elif retry is True or retry is None:
+            retry_config = RetryConfig()
+        else:
+            retry_config = retry
 
         self._http = AsyncHttpClient(
             base_url=base_url,
             api_key=api_key,
             timeout=timeout,
             headers=headers,
+            retry=retry_config,
         )
 
         self.documents = AsyncDocumentsResource(self._http)

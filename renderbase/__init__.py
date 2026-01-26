@@ -19,6 +19,7 @@ Example:
 """
 
 from .client import Renderbase, AsyncRenderbase
+from .http import RetryConfig
 from .exceptions import RenderbaseError, WebhookSignatureError
 from .webhooks import verify_webhook_signature
 
@@ -26,6 +27,7 @@ __version__ = "1.0.0"
 __all__ = [
     "Renderbase",
     "AsyncRenderbase",
+    "RetryConfig",
     "RenderbaseError",
     "WebhookSignatureError",
     "verify_webhook_signature",

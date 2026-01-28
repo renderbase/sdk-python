@@ -1,10 +1,10 @@
 """
-Renderbase SDK Exceptions
+Rynko SDK Exceptions
 """
 
 
-class RenderbaseError(Exception):
-    """Base exception for Renderbase SDK errors."""
+class RynkoError(Exception):
+    """Base exception for Rynko SDK errors."""
 
     def __init__(self, message: str, code: str = "UnknownError", status_code: int = 0):
         self.message = message
@@ -13,7 +13,7 @@ class RenderbaseError(Exception):
         super().__init__(message)
 
     def __repr__(self) -> str:
-        return f"RenderbaseError(message={self.message!r}, code={self.code!r}, status_code={self.status_code})"
+        return f"RynkoError(message={self.message!r}, code={self.code!r}, status_code={self.status_code})"
 
 
 class WebhookSignatureError(Exception):

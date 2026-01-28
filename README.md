@@ -1,9 +1,9 @@
-# renderbase
+# rynko
 
-Official Python SDK for [Renderbase](https://renderbase.dev) - the document generation platform with unified template design for PDF and Excel documents.
+Official Python SDK for [Rynko](https://rynko.dev) - the document generation platform with unified template design for PDF and Excel documents.
 
-[![PyPI version](https://img.shields.io/pypi/v/renderbase.svg)](https://pypi.org/project/renderbase/)
-[![Python versions](https://img.shields.io/pypi/pyversions/renderbase.svg)](https://pypi.org/project/renderbase/)
+[![PyPI version](https://img.shields.io/pypi/v/rynko.svg)](https://pypi.org/project/rynko/)
+[![Python versions](https://img.shields.io/pypi/pyversions/rynko.svg)](https://pypi.org/project/rynko/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## Table of Contents
@@ -38,21 +38,21 @@ Official Python SDK for [Renderbase](https://renderbase.dev) - the document gene
 ## Installation
 
 ```bash
-pip install renderbase
+pip install rynko
 ```
 
 Or with optional async support:
 
 ```bash
-pip install renderbase[async]
+pip install rynko[async]
 ```
 
 ## Quick Start
 
 ```python
-from renderbase import Renderbase
+from rynko import Rynko
 
-client = Renderbase(api_key="your_api_key")
+client = Rynko(api_key="your_api_key")
 
 # Generate a PDF document (async - returns job info immediately)
 job = client.documents.generate_pdf(
@@ -88,7 +88,7 @@ print(f"Download URL: {completed['downloadUrl']}")
 
 ### Get an API Key
 
-1. Log in to your [Renderbase Dashboard](https://app.renderbase.dev)
+1. Log in to your [Rynko Dashboard](https://app.rynko.dev)
 2. Navigate to **Settings** → **API Keys**
 3. Click **Create API Key**
 4. Copy the key and store it securely (it won't be shown again)
@@ -97,10 +97,10 @@ print(f"Download URL: {completed['downloadUrl']}")
 
 ```python
 import os
-from renderbase import Renderbase
+from rynko import Rynko
 
 # Using environment variable (recommended)
-client = Renderbase(api_key=os.environ["RENDERBASE_API_KEY"])
+client = Rynko(api_key=os.environ["RYNKO_API_KEY"])
 
 # Verify authentication
 user = client.me()
@@ -118,7 +118,7 @@ print(f"API Key valid: {is_valid}")
 
 ## Document Generation
 
-Document generation in Renderbase is **asynchronous**. When you call a generate method, the job is queued for processing and you receive a job ID immediately. Use `wait_for_completion()` to poll until the document is ready.
+Document generation in Rynko is **asynchronous**. When you call a generate method, the job is queued for processing and you receive a job ID immediately. Use `wait_for_completion()` to poll until the document is ready.
 
 ### Generate PDF
 
@@ -378,7 +378,7 @@ if "variables" in template and template["variables"]:
 
 ## Webhooks
 
-Webhook subscriptions are managed through the [Renderbase Dashboard](https://app.renderbase.dev). The SDK provides read-only access to view webhooks and utilities for signature verification.
+Webhook subscriptions are managed through the [Rynko Dashboard](https://app.rynko.dev). The SDK provides read-only access to view webhooks and utilities for signature verification.
 
 ### List Webhooks
 
@@ -406,17 +406,17 @@ print(f"Description: {webhook.get('description')}")
 
 ### Verify Webhook Signatures
 
-When receiving webhooks, always verify the signature to ensure the request came from Renderbase:
+When receiving webhooks, always verify the signature to ensure the request came from Rynko:
 
 ```python
 import os
-from renderbase import verify_webhook_signature, WebhookSignatureError
+from rynko import verify_webhook_signature, WebhookSignatureError
 
 # Flask example
-@app.route('/webhooks/renderbase', methods=['POST'])
+@app.route('/webhooks/rynko', methods=['POST'])
 def handle_webhook():
-    signature = request.headers.get('X-Renderbase-Signature')
-    timestamp = request.headers.get('X-Renderbase-Timestamp')
+    signature = request.headers.get('X-Rynko-Signature')
+    timestamp = request.headers.get('X-Rynko-Timestamp')
 
     try:
         event = verify_webhook_signature(
@@ -460,12 +460,12 @@ def handle_webhook():
 import os
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
-from renderbase import verify_webhook_signature, WebhookSignatureError
+from rynko import verify_webhook_signature, WebhookSignatureError
 
 @csrf_exempt
 def webhook_handler(request):
-    signature = request.headers.get('X-Renderbase-Signature')
-    timestamp = request.headers.get('X-Renderbase-Timestamp')
+    signature = request.headers.get('X-Rynko-Signature')
+    timestamp = request.headers.get('X-Rynko-Timestamp')
 
     try:
         event = verify_webhook_signature(
@@ -491,14 +491,14 @@ def webhook_handler(request):
 ```python
 import os
 from fastapi import FastAPI, Request, HTTPException
-from renderbase import verify_webhook_signature, WebhookSignatureError
+from rynko import verify_webhook_signature, WebhookSignatureError
 
 app = FastAPI()
 
-@app.post("/webhooks/renderbase")
+@app.post("/webhooks/rynko")
 async def webhook_handler(request: Request):
-    signature = request.headers.get('X-Renderbase-Signature')
-    timestamp = request.headers.get('X-Renderbase-Timestamp')
+    signature = request.headers.get('X-Rynko-Signature')
+    timestamp = request.headers.get('X-Rynko-Timestamp')
     body = await request.body()
 
     try:
@@ -530,25 +530,25 @@ async def webhook_handler(request: Request):
 
 #### Webhook Headers
 
-Renderbase sends these headers with each webhook request:
+Rynko sends these headers with each webhook request:
 
 | Header | Description |
 |--------|-------------|
-| `X-Renderbase-Signature` | HMAC-SHA256 signature (format: `v1=<hex>`) |
-| `X-Renderbase-Timestamp` | Unix timestamp when the webhook was sent |
-| `X-Renderbase-Event-Id` | Unique event identifier |
-| `X-Renderbase-Event-Type` | Event type (e.g., `document.generated`) |
+| `X-Rynko-Signature` | HMAC-SHA256 signature (format: `v1=<hex>`) |
+| `X-Rynko-Timestamp` | Unix timestamp when the webhook was sent |
+| `X-Rynko-Event-Id` | Unique event identifier |
+| `X-Rynko-Event-Type` | Event type (e.g., `document.generated`) |
 
 ## Async Client
 
-For async applications (FastAPI, aiohttp, etc.), use `AsyncRenderbase`:
+For async applications (FastAPI, aiohttp, etc.), use `AsyncRynko`:
 
 ```python
-from renderbase import AsyncRenderbase
+from rynko import AsyncRynko
 import asyncio
 
 async def main():
-    async with AsyncRenderbase(api_key="your_api_key") as client:
+    async with AsyncRynko(api_key="your_api_key") as client:
         # Get user info
         user = await client.me()
         print(f"Authenticated as: {user['email']}")
@@ -576,19 +576,19 @@ asyncio.run(main())
 
 ```python
 from fastapi import FastAPI, Depends
-from renderbase import AsyncRenderbase
+from rynko import AsyncRynko
 import os
 
 app = FastAPI()
 
-async def get_renderbase():
-    async with AsyncRenderbase(api_key=os.environ["RENDERBASE_API_KEY"]) as client:
+async def get_rynko():
+    async with AsyncRynko(api_key=os.environ["RYNKO_API_KEY"]) as client:
         yield client
 
 @app.post("/generate-invoice")
 async def generate_invoice(
     invoice_data: dict,
-    client: AsyncRenderbase = Depends(get_renderbase)
+    client: AsyncRynko = Depends(get_rynko)
 ):
     job = await client.documents.generate_pdf(
         template_id="tmpl_invoice",
@@ -602,12 +602,12 @@ async def generate_invoice(
 ## Configuration
 
 ```python
-client = Renderbase(
+client = Rynko(
     # Required: Your API key
     api_key="your_api_key",
 
-    # Optional: Custom base URL (default: https://api.renderbase.dev)
-    base_url="https://api.renderbase.dev",
+    # Optional: Custom base URL (default: https://api.rynko.dev)
+    base_url="https://api.rynko.dev",
 
     # Optional: Request timeout in seconds (default: 30)
     timeout=30.0,
@@ -623,33 +623,33 @@ We recommend using environment variables for configuration:
 
 ```bash
 # .env
-RENDERBASE_API_KEY=your_api_key_here
+RYNKO_API_KEY=your_api_key_here
 WEBHOOK_SECRET=your_webhook_secret_here
 ```
 
 ```python
 import os
 from dotenv import load_dotenv
-from renderbase import Renderbase
+from rynko import Rynko
 
 load_dotenv()
 
-client = Renderbase(api_key=os.environ["RENDERBASE_API_KEY"])
+client = Rynko(api_key=os.environ["RYNKO_API_KEY"])
 ```
 
 ## Error Handling
 
 ```python
-from renderbase import Renderbase, RenderbaseError
+from rynko import Rynko, RynkoError
 
-client = Renderbase(api_key="your_api_key")
+client = Rynko(api_key="your_api_key")
 
 try:
     job = client.documents.generate_pdf(
         template_id="invalid_template",
         variables={},
     )
-except RenderbaseError as e:
+except RynkoError as e:
     print(f"API Error: {e.message}")
     print(f"Error Code: {e.code}")
     print(f"Status Code: {e.status_code}")
@@ -686,7 +686,7 @@ Use the client as a context manager to ensure proper resource cleanup:
 
 ```python
 # Synchronous
-with Renderbase(api_key="your_api_key") as client:
+with Rynko(api_key="your_api_key") as client:
     job = client.documents.generate_pdf(
         template_id="tmpl_invoice",
         variables={"invoiceNumber": "INV-001"},
@@ -695,7 +695,7 @@ with Renderbase(api_key="your_api_key") as client:
     print(f"Download URL: {completed['downloadUrl']}")
 
 # Asynchronous
-async with AsyncRenderbase(api_key="your_api_key") as client:
+async with AsyncRynko(api_key="your_api_key") as client:
     job = await client.documents.generate_pdf(
         template_id="tmpl_invoice",
         variables={"invoiceNumber": "INV-001"},
@@ -758,7 +758,7 @@ MIT
 
 ## Support
 
-- **Documentation**: https://docs.renderbase.dev/sdk/python
-- **API Reference**: https://docs.renderbase.dev/api
-- **GitHub Issues**: https://github.com/renderbase/sdk-python/issues
-- **Email**: support@renderbase.dev
+- **Documentation**: https://docs.rynko.dev/sdk/python
+- **API Reference**: https://docs.rynko.dev/api
+- **GitHub Issues**: https://github.com/rynko/sdk-python/issues
+- **Email**: support@rynko.dev

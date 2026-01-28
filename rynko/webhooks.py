@@ -23,7 +23,7 @@ def verify_webhook_signature(
 
     Args:
         payload: Raw request body as string
-        signature: Value of X-Renderbase-Signature header
+        signature: Value of X-Rynko-Signature header
         secret: Webhook secret from your subscription
         tolerance: Maximum age of webhook in seconds (default: 300)
 
@@ -34,12 +34,12 @@ def verify_webhook_signature(
         WebhookSignatureError: If signature is invalid
 
     Example:
-        >>> from renderbase import verify_webhook_signature
+        >>> from rynko import verify_webhook_signature
         >>>
         >>> # In your webhook handler (Flask example)
-        >>> @app.route('/webhooks/renderbase', methods=['POST'])
+        >>> @app.route('/webhooks/rynko', methods=['POST'])
         >>> def handle_webhook():
-        ...     signature = request.headers.get('X-Renderbase-Signature')
+        ...     signature = request.headers.get('X-Rynko-Signature')
         ...     try:
         ...         event = verify_webhook_signature(
         ...             payload=request.data.decode('utf-8'),

@@ -3,17 +3,17 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "renderbase"
+name = "rynko"
 version = "1.0.0"
-description = "Official Python SDK for Renderbase - Generate PDFs and Excel files from templates"
+description = "Official Python SDK for Rynko - Generate PDFs and Excel files from templates"
 readme = "README.md"
 license = "MIT"
 requires-python = ">=3.8"
 authors = [
-    { name = "Renderbase", email = "support@renderbase.dev" }
+    { name = "Rynko", email = "support@rynko.dev" }
 ]
 keywords = [
-    "renderbase",
+    "rynko",
     "pdf",
     "excel",
     "document-generation",
@@ -48,13 +48,13 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://renderbase.dev"
-Documentation = "https://docs.renderbase.dev/sdk/python"
-Repository = "https://github.com/renderbase/sdk-python"
-Issues = "https://github.com/renderbase/sdk-python/issues"
+Homepage = "https://rynko.dev"
+Documentation = "https://docs.rynko.dev/sdk/python"
+Repository = "https://github.com/rynko/sdk-python"
+Issues = "https://github.com/rynko/sdk-python/issues"
 
 [tool.hatch.build.targets.wheel]
-packages = ["renderbase"]
+packages = ["rynko"]
 
 [tool.mypy]
 python_version = "3.8"

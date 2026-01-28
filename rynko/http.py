@@ -1,5 +1,5 @@
 """
-HTTP Client for Renderbase SDK with automatic retry and exponential backoff
+HTTP Client for Rynko SDK with automatic retry and exponential backoff
 """
 
 import random
@@ -10,7 +10,7 @@ from dataclasses import dataclass, field
 
 import httpx
 
-from .exceptions import RenderbaseError
+from .exceptions import RynkoError
 
 
 @dataclass
@@ -98,7 +98,7 @@ class HttpClient:
         self._headers = {
             "Content-Type": "application/json",
             "Authorization": f"Bearer {api_key}",
-            "User-Agent": "renderbase-python/1.0.0",
+            "User-Agent": "rynko-python/1.0.0",
             **(headers or {}),
         }
         self._client = httpx.Client(timeout=timeout)
@@ -120,7 +120,7 @@ class HttpClient:
         if response.status_code >= 400:
             message = data.get("message", f"HTTP {response.status_code}")
             code = data.get("error", "ApiError")
-            raise RenderbaseError(message, code, response.status_code)
+            raise RynkoError(message, code, response.status_code)
 
         return data
 
@@ -132,7 +132,7 @@ class HttpClient:
     ) -> Dict[str, Any]:
         """Make a request with automatic retry on retryable errors."""
         max_attempts = self._retry_config.max_attempts if self._retry_config else 1
-        last_error: Optional[RenderbaseError] = None
+        last_error: Optional[RynkoError] = None
 
         for attempt in range(max_attempts):
             try:
@@ -155,7 +155,7 @@ class HttpClient:
                         data = response.json()
                     except Exception:
                         data = {}
-                    last_error = RenderbaseError(
+                    last_error = RynkoError(
                         data.get("message", f"HTTP {response.status_code}"),
                         data.get("error", "ApiError"),
                         response.status_code,
@@ -168,7 +168,7 @@ class HttpClient:
 
                 return self._handle_response(response)
 
-            except RenderbaseError as e:
+            except RynkoError as e:
                 # If it's a retryable error and we have attempts left
                 if self._should_retry(e.status_code) and attempt < max_attempts - 1:
                     last_error = e
@@ -181,7 +181,7 @@ class HttpClient:
         if last_error:
             raise last_error
 
-        raise RenderbaseError("Request failed after retries", "RetryExhausted", 0)
+        raise RynkoError("Request failed after retries", "RetryExhausted", 0)
 
     def get(
         self, path: str, params: Optional[Dict[str, Any]] = None
@@ -256,7 +256,7 @@ class AsyncHttpClient:
         self._headers = {
             "Content-Type": "application/json",
             "Authorization": f"Bearer {api_key}",
-            "User-Agent": "renderbase-python/1.0.0",
+            "User-Agent": "rynko-python/1.0.0",
             **(headers or {}),
         }
         self._client = httpx.AsyncClient(timeout=timeout)
@@ -278,7 +278,7 @@ class AsyncHttpClient:
         if response.status_code >= 400:
             message = data.get("message", f"HTTP {response.status_code}")
             code = data.get("error", "ApiError")
-            raise RenderbaseError(message, code, response.status_code)
+            raise RynkoError(message, code, response.status_code)
 
         return data
 
@@ -290,7 +290,7 @@ class AsyncHttpClient:
     ) -> Dict[str, Any]:
         """Make a request with automatic retry on retryable errors."""
         max_attempts = self._retry_config.max_attempts if self._retry_config else 1
-        last_error: Optional[RenderbaseError] = None
+        last_error: Optional[RynkoError] = None
 
         for attempt in range(max_attempts):
             try:
@@ -313,7 +313,7 @@ class AsyncHttpClient:
                         data = response.json()
                     except Exception:
                         data = {}
-                    last_error = RenderbaseError(
+                    last_error = RynkoError(
                         data.get("message", f"HTTP {response.status_code}"),
                         data.get("error", "ApiError"),
                         response.status_code,
@@ -326,7 +326,7 @@ class AsyncHttpClient:
 
                 return self._handle_response(response)
 
-            except RenderbaseError as e:
+            except RynkoError as e:
                 # If it's a retryable error and we have attempts left
                 if self._should_retry(e.status_code) and attempt < max_attempts - 1:
                     last_error = e
@@ -339,7 +339,7 @@ class AsyncHttpClient:
         if last_error:
             raise last_error
 
-        raise RenderbaseError("Request failed after retries", "RetryExhausted", 0)
+        raise RynkoError("Request failed after retries", "RetryExhausted", 0)
 
     async def get(
         self, path: str, params: Optional[Dict[str, Any]] = None

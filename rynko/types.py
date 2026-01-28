@@ -1,5 +1,5 @@
 """
-Renderbase SDK Type Definitions
+Rynko SDK Type Definitions
 """
 
 from typing import Any, Dict, List, Literal, Optional, TypedDict

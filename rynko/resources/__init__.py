@@ -1,5 +1,5 @@
 """
-Renderbase SDK Resources
+Rynko SDK Resources
 """
 
 from .documents import DocumentsResource, AsyncDocumentsResource

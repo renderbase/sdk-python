@@ -1,6 +1,6 @@
 # Python SDK Deployment Guide
 
-This guide covers publishing and maintaining the Renderbase Python SDK (`renderbase`).
+This guide covers publishing and maintaining the Rynko Python SDK (`rynko`).
 
 ## Prerequisites
 
@@ -12,10 +12,10 @@ This guide covers publishing and maintaining the Renderbase Python SDK (`renderb
 ## Package Overview
 
 ```
-renderbase/
-├── renderbase/
+rynko/
+├── rynko/
 │   ├── __init__.py      # Package exports
-│   ├── client.py        # Renderbase and AsyncRenderbase clients
+│   ├── client.py        # Rynko and AsyncRynko clients
 │   ├── exceptions.py    # Error classes
 │   ├── types.py         # TypedDict definitions
 │   ├── http.py          # HTTP client (sync/async)
@@ -51,11 +51,11 @@ pytest
 
 ```bash
 # Type checking
-mypy renderbase
+mypy rynko
 
 # Code style
-ruff check renderbase
-ruff format renderbase
+ruff check rynko
+ruff format rynko
 ```
 
 ### 4. Build Package
@@ -65,8 +65,8 @@ python -m build
 ```
 
 This creates:
-- `dist/renderbase-X.Y.Z.tar.gz` (source distribution)
-- `dist/renderbase-X.Y.Z-py3-none-any.whl` (wheel)
+- `dist/rynko-X.Y.Z.tar.gz` (source distribution)
+- `dist/rynko-X.Y.Z-py3-none-any.whl` (wheel)
 
 ## Publishing to PyPI
 
@@ -195,18 +195,18 @@ Maintain `CHANGELOG.md`:
 
 Users should set:
 ```bash
-export RENDERBASE_API_KEY=your_api_key
+export RYNKO_API_KEY=your_api_key
 ```
 
 ### SDK Configuration
 
 ```python
-from renderbase import Renderbase
+from rynko import Rynko
 
-client = Renderbase(
-    api_key=os.environ["RENDERBASE_API_KEY"],
+client = Rynko(
+    api_key=os.environ["RYNKO_API_KEY"],
     # Optional
-    base_url="https://api.renderbase.dev",
+    base_url="https://api.rynko.dev",
     timeout=30.0,
 )
 ```
@@ -215,7 +215,7 @@ client = Renderbase(
 
 ### Backend Requirements
 
-The SDK requires these Renderbase API endpoints:
+The SDK requires these Rynko API endpoints:
 
 | Endpoint | SDK Method |
 |----------|------------|
@@ -248,8 +248,8 @@ pytest tests/
 
 Create `.env.test`:
 ```bash
-RENDERBASE_API_KEY=test_api_key
-RENDERBASE_BASE_URL=http://localhost:3000
+RYNKO_API_KEY=test_api_key
+RYNKO_BASE_URL=http://localhost:3000
 ```
 
 Run integration tests:
@@ -260,15 +260,15 @@ pytest tests/integration/
 ### Test Coverage
 
 ```bash
-pytest --cov=renderbase --cov-report=html
+pytest --cov=rynko --cov-report=html
 ```
 
 ### Manual Testing
 
 ```python
-from renderbase import Renderbase
+from rynko import Rynko
 
-client = Renderbase(
+client = Rynko(
     api_key="your_test_key",
     base_url="http://localhost:3000",
 )
@@ -290,10 +290,10 @@ print(f"Email sent: {result['id']}")
 
 ```python
 import asyncio
-from renderbase import AsyncRenderbase
+from rynko import AsyncRynko
 
 async def test_async():
-    async with AsyncRenderbase(api_key="your_key") as client:
+    async with AsyncRynko(api_key="your_key") as client:
         user = await client.me()
         print(f"Authenticated as: {user['email']}")
 
@@ -325,14 +325,14 @@ Update `README.md` with:
 The SDK uses TypedDict for all response types:
 
 ```python
-from renderbase.types import SendEmailResponse
+from rynko.types import SendEmailResponse
 
 result: SendEmailResponse = client.emails.send(...)
 ```
 
 Verify types with mypy:
 ```bash
-mypy renderbase --strict
+mypy rynko --strict
 ```
 
 ## Troubleshooting
@@ -359,8 +359,8 @@ mypy renderbase --strict
 ### Support Channels
 
 - GitHub Issues: Report bugs and feature requests
-- Email: sdk-support@renderbase.dev
-- Documentation: https://docs.renderbase.dev/sdk/python
+- Email: sdk-support@rynko.dev
+- Documentation: https://docs.rynko.dev/sdk/python
 
 ## Security
 
@@ -380,7 +380,7 @@ pip audit  # if pip-audit is installed
 
 ### Vulnerability Disclosure
 
-Report security issues to: security@renderbase.dev
+Report security issues to: security@rynko.dev
 
 ## Framework Examples
 
@@ -388,14 +388,14 @@ Report security issues to: security@renderbase.dev
 
 ```python
 from flask import Flask, request
-from renderbase import Renderbase, verify_webhook_signature
+from rynko import Rynko, verify_webhook_signature
 
 app = Flask(__name__)
-client = Renderbase(api_key=os.environ["RENDERBASE_API_KEY"])
+client = Rynko(api_key=os.environ["RYNKO_API_KEY"])
 
 @app.route("/webhook", methods=["POST"])
 def webhook():
-    signature = request.headers.get("X-Renderbase-Signature")
+    signature = request.headers.get("X-Rynko-Signature")
     event = verify_webhook_signature(
         payload=request.data.decode("utf-8"),
         signature=signature,
@@ -409,21 +409,21 @@ def webhook():
 
 ```python
 from fastapi import FastAPI, Request, HTTPException
-from renderbase import AsyncRenderbase, verify_webhook_signature
+from rynko import AsyncRynko, verify_webhook_signature
 
 app = FastAPI()
 
 @app.on_event("startup")
 async def startup():
-    app.state.renderbase = AsyncRenderbase(api_key=os.environ["RENDERBASE_API_KEY"])
+    app.state.rynko = AsyncRynko(api_key=os.environ["RYNKO_API_KEY"])
 
 @app.on_event("shutdown")
 async def shutdown():
-    await app.state.renderbase.close()
+    await app.state.rynko.close()
 
 @app.post("/send")
 async def send_email(template_id: str, to: str):
-    result = await app.state.renderbase.emails.send(
+    result = await app.state.rynko.emails.send(
         template_id=template_id,
         to=to,
     )
@@ -436,9 +436,9 @@ async def send_email(template_id: str, to: str):
 # views.py
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from renderbase import Renderbase
+from rynko import Rynko
 
-client = Renderbase(api_key=settings.RENDERBASE_API_KEY)
+client = Rynko(api_key=settings.RYNKO_API_KEY)
 
 def send_email(request):
     result = client.emails.send(

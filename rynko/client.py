@@ -1,5 +1,5 @@
 """
-Renderbase SDK Client
+Rynko SDK Client
 """
 
 from typing import Any, Dict, Optional, Union
@@ -10,18 +10,18 @@ from .resources.templates import TemplatesResource, AsyncTemplatesResource
 from .resources.webhooks import WebhooksResource, AsyncWebhooksResource
 
 
-DEFAULT_BASE_URL = "https://api.renderbase.dev"
+DEFAULT_BASE_URL = "https://api.rynko.dev"
 DEFAULT_TIMEOUT = 30.0
 
 
-class Renderbase:
+class Rynko:
     """
-    Synchronous Renderbase client.
+    Synchronous Rynko client.
 
     Example:
-        >>> from renderbase import Renderbase
+        >>> from rynko import Rynko
         >>>
-        >>> client = Renderbase(api_key="your_api_key")
+        >>> client = Rynko(api_key="your_api_key")
         >>>
         >>> # Generate a PDF document
         >>> result = client.documents.generate(
@@ -43,11 +43,11 @@ class Renderbase:
         retry: Optional[Union[RetryConfig, bool]] = None,
     ):
         """
-        Create a new Renderbase client.
+        Create a new Rynko client.
 
         Args:
-            api_key: Your Renderbase API key
-            base_url: API base URL (default: https://api.renderbase.dev)
+            api_key: Your Rynko API key
+            base_url: API base URL (default: https://api.rynko.dev)
             timeout: Request timeout in seconds (default: 30)
             headers: Additional headers to include in requests
             retry: Retry configuration. Pass RetryConfig for custom settings,
@@ -94,23 +94,23 @@ class Renderbase:
         """Close the HTTP client."""
         self._http.close()
 
-    def __enter__(self) -> "Renderbase":
+    def __enter__(self) -> "Rynko":
         return self
 
     def __exit__(self, *args: Any) -> None:
         self.close()
 
 
-class AsyncRenderbase:
+class AsyncRynko:
     """
-    Asynchronous Renderbase client.
+    Asynchronous Rynko client.
 
     Example:
-        >>> from renderbase import AsyncRenderbase
+        >>> from rynko import AsyncRynko
         >>> import asyncio
         >>>
         >>> async def main():
-        ...     async with AsyncRenderbase(api_key="your_api_key") as client:
+        ...     async with AsyncRynko(api_key="your_api_key") as client:
         ...         result = await client.documents.generate(
         ...             template_id="tmpl_invoice",
         ...             format="pdf",
@@ -132,11 +132,11 @@ class AsyncRenderbase:
         retry: Optional[Union[RetryConfig, bool]] = None,
     ):
         """
-        Create a new async Renderbase client.
+        Create a new async Rynko client.
 
         Args:
-            api_key: Your Renderbase API key
-            base_url: API base URL (default: https://api.renderbase.dev)
+            api_key: Your Rynko API key
+            base_url: API base URL (default: https://api.rynko.dev)
             timeout: Request timeout in seconds (default: 30)
             headers: Additional headers to include in requests
             retry: Retry configuration. Pass RetryConfig for custom settings,
@@ -183,7 +183,7 @@ class AsyncRenderbase:
         """Close the HTTP client."""
         await self._http.close()
 
-    async def __aenter__(self) -> "AsyncRenderbase":
+    async def __aenter__(self) -> "AsyncRynko":
         return self
 
     async def __aexit__(self, *args: Any) -> None:

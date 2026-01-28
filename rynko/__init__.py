@@ -1,12 +1,12 @@
 """
-Renderbase Python SDK
+Rynko Python SDK
 
-Official SDK for the Renderbase document generation platform.
+Official SDK for the Rynko document generation platform.
 
 Example:
-    >>> from renderbase import Renderbase
+    >>> from rynko import Rynko
     >>>
-    >>> client = Renderbase(api_key="your_api_key")
+    >>> client = Rynko(api_key="your_api_key")
     >>>
     >>> # Generate a PDF document
     >>> result = client.documents.generate(
@@ -18,17 +18,17 @@ Example:
     >>> print(f"Download URL: {result['downloadUrl']}")
 """
 
-from .client import Renderbase, AsyncRenderbase
+from .client import Rynko, AsyncRynko
 from .http import RetryConfig
-from .exceptions import RenderbaseError, WebhookSignatureError
+from .exceptions import RynkoError, WebhookSignatureError
 from .webhooks import verify_webhook_signature
 
 __version__ = "1.0.0"
 __all__ = [
-    "Renderbase",
-    "AsyncRenderbase",
+    "Rynko",
+    "AsyncRynko",
     "RetryConfig",
-    "RenderbaseError",
+    "RynkoError",
     "WebhookSignatureError",
     "verify_webhook_signature",
 ]

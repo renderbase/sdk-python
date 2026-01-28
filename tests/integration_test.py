@@ -1,19 +1,19 @@
 #!/usr/bin/env python3
 """
-Renderbase Python SDK Integration Tests
+Rynko Python SDK Integration Tests
 
 Run these tests against a live API to verify SDK functionality.
 
 Prerequisites:
-1. Set RENDERBASE_API_KEY environment variable
-2. Set RENDERBASE_API_URL environment variable (optional, defaults to https://api.renderbase.dev)
+1. Set RYNKO_API_KEY environment variable
+2. Set RYNKO_API_URL environment variable (optional, defaults to https://api.rynko.dev)
 3. Have at least one template created in your workspace
 
 Usage:
-    RENDERBASE_API_KEY=your_key python tests/integration_test.py
+    RYNKO_API_KEY=your_key python tests/integration_test.py
 
 Or with custom API URL:
-    RENDERBASE_API_KEY=your_key RENDERBASE_API_URL=http://localhost:3000 python tests/integration_test.py
+    RYNKO_API_KEY=your_key RYNKO_API_URL=http://localhost:3000 python tests/integration_test.py
 """
 
 import os
@@ -23,17 +23,17 @@ from typing import Optional, List, Tuple
 # Add parent directory to path for local development
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from renderbase import Renderbase, RenderbaseError
+from rynko import Rynko, RynkoError
 
 # Configuration
-API_KEY = os.environ.get("RENDERBASE_API_KEY")
-API_URL = os.environ.get("RENDERBASE_API_URL", "https://api.renderbase.dev")
+API_KEY = os.environ.get("RYNKO_API_KEY")
+API_URL = os.environ.get("RYNKO_API_URL", "https://api.rynko.dev")
 
 if not API_KEY:
-    print("❌ RENDERBASE_API_KEY environment variable is required")
+    print("❌ RYNKO_API_KEY environment variable is required")
     sys.exit(1)
 
-client = Renderbase(
+client = Rynko(
     api_key=API_KEY,
     base_url=API_URL,
 )
@@ -79,7 +79,7 @@ def test(name: str):
 def run_tests():
     global template_id, template_variables, job_id
 
-    print("\n🧪 Renderbase Python SDK Integration Tests\n")
+    print("\n🧪 Rynko Python SDK Integration Tests\n")
     print(f"API URL: {API_URL}")
     print(f"API Key: {API_KEY[:10]}...")
     print("\n---\n")
@@ -299,7 +299,7 @@ def run_tests():
         try:
             client.templates.get("invalid-template-id-12345")
             raise Exception("Expected error for invalid template")
-        except RenderbaseError as e:
+        except RynkoError as e:
             print(f"  Error code: {e.code}")
             print(f"  Status: {e.status_code}")
             return  # Test passed

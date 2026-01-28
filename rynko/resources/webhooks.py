@@ -2,7 +2,7 @@
 Webhooks Resource
 
 Provides read-only access to webhook subscriptions.
-Webhook subscriptions are managed through the Renderbase dashboard.
+Webhook subscriptions are managed through the Rynko dashboard.
 """
 
 from typing import Any, Dict
